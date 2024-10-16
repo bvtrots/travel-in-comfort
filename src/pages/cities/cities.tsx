@@ -1,18 +1,15 @@
 import { Header } from '../../components/header/header';
-import { LocationsTabs } from './cities-tabs.tsx/cities-tabs';
+import { CitiesTabs } from './cities-tabs.tsx/cities-tabs';
 import CityOffers from './city-offers/city-offers';
 import { useChangeTitle } from '../../hooks/title';
 import { Empty } from './empty';
 import { Map } from '../../components/map/map';
 import clsx from 'clsx';
 import { useAppSelector } from '../../hooks/store';
-import { getOffersByCity } from '../../utils/utils';
+import { offersByCity } from '../../store/slices/offers-slice';
 function Cities(): JSX.Element {
-  const city = useAppSelector((state) => state.interplay.selectCity);
-  const offers = useAppSelector((state) => state.offers.offers);
-  const activeOffer = useAppSelector((state) => state.interplay.activeOffer);
-  const filteredOffers = getOffersByCity(city, offers);
-  const isEmpty = filteredOffers.length === 0;
+  const cityOffers = useAppSelector(offersByCity);
+  const isEmpty = cityOffers.length === 0;
   const isEmptyMainClasses = clsx('page__main', 'page__main--index', {
     'page__main--index-empty': isEmpty,
   });
@@ -30,7 +27,7 @@ function Cities(): JSX.Element {
         <h1 className="visually-hidden">Cities</h1>
         <div className="tabs">
           <section className="locations container">
-            <LocationsTabs />
+            <CitiesTabs />
           </section>
         </div>
         <div className="cities">
@@ -43,9 +40,7 @@ function Cities(): JSX.Element {
                 <div className="cities__right-section">
                   <Map
                     className="cities"
-                    activeCity={city}
-                    offers={filteredOffers}
-                    activeOffer={activeOffer}
+                    offers={cityOffers}
                   />
                 </div>
               </>

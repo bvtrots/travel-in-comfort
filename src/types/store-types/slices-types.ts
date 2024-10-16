@@ -7,13 +7,13 @@ type OffersSlice = {
   comments: Comments;
 };
 
-type InterplaySlice = {
-  selectCity: CityName;
-  activeOffer: FullOffer | null;
+type ActiveSlice = {
+  city: CityName;
+  offerId: string| null;
 };
 
 type UserSlice = {
   status: AuthStatus;
 };
 
-export type { OffersSlice, InterplaySlice, UserSlice };
+export type { OffersSlice, ActiveSlice, UserSlice };
