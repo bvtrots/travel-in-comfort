@@ -1,5 +1,5 @@
 export const Setting = {
-  OffersCount: 10,
+  OffersCount: 30,
 } as const;
 
 export enum AppRoute {
@@ -27,3 +27,10 @@ export enum MapMarker {
 }
 
 export const MAX_NEARBY_OFFER_COUNT = 4;
+
+export const SortOption = {
+  Popular: 'Popular',
+  PriceLowToHigh: 'Price: low to high',
+  PriceHighToLow: 'Price: high to low',
+  TopRatedFirst: 'Top rated first',
+};
