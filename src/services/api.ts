@@ -1,7 +1,7 @@
 import axios, { AxiosInstance } from 'axios';
 import { getToken } from './token';
 
-const BASE_URL = 'https://16.design.htmlacademy.pro/six-cities';
+const BASE_URL = 'https://bvtrots-mock-server.onrender.com/travel-in-comfort';
 const TIMEOUT = 5000;
 
 const createAPI = (): AxiosInstance => {
