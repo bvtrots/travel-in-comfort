@@ -5,11 +5,11 @@ import clsx from 'clsx';
 import { FavoritesEmpty } from './favorites-empty';
 import { List } from './list';
 import { useAppSelector } from '../../hooks/store';
-import { favoritesOffers } from '../../store/slices/offers-slice/offers-selectors';
+import { favoritesSelectors } from '../../store/slices/favorites-slice';
 function Favorites(): JSX.Element {
-  const favorites = useAppSelector(favoritesOffers);
+  const favorites = useAppSelector(favoritesSelectors.favoritesOffers);
   const isEmptyFavorites = favorites.length === 0;
-  const favoritePageClasses = clsx('page__main', 'page__mxain--favorites', {
+  const favoritePageClasses = clsx('page__main', 'page__main--favorites', {
     'page__main--favorites-empty': isEmptyFavorites,
   });
   useChangeTitle('Favorites');

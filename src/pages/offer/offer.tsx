@@ -1,4 +1,4 @@
-import { useAppSelector } from '../../hooks/store';
+import { useAppDispatch, useAppSelector } from '../../hooks/store';
 import { Header } from '../../components/header/header';
 import { ShowLoading } from '../../components/main/show-loading';
 import { Photos } from './photos';
@@ -7,22 +7,39 @@ import { offersSelectors } from '../../store/slices/offers-slice/offers-slice';
 import { Neighboring } from './neighboring';
 import { useChangeTitle } from '../../hooks/title';
 import { Map } from '../../components/map/map';
-import type { ThumbnailOffer } from '../../types/offer-type';
-import type { OfferType } from '../../types/offer-type';
 import { Setting } from '../../const';
-
-export type OffersMapType = OfferType | ThumbnailOffer;
+import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import { fetchGetCommentsAction } from '../../store/api-actions/comments-actions';
+import {
+  fetchOfferAction,
+  fetchOffersNearbyAction,
+} from '../../store/api-actions/offers-actions';
+import { setActiveOfferId } from '../../store/slices/active-slice';
 
 function Offer(): JSX.Element {
-  const activeOffer = useAppSelector(offersSelectors.activeOffer)!;
+  const { id = '' } = useParams();
+  const activeOffer = useAppSelector(offersSelectors.activeOffer);
   const comments = useAppSelector(offersSelectors.comments);
   const nearbyOffers = useAppSelector(offersSelectors.nearbyOffers).slice(
     0,
     Setting.NearbyCount
   );
-  const offersForMap: OffersMapType[] = [...nearbyOffers, activeOffer];
-
   useChangeTitle('Offer');
+
+  const dispatch = useAppDispatch();
+  const currentId = activeOffer?.id ?? '';
+
+  useEffect(() => {
+    if (currentId !== id) {
+      dispatch(setActiveOfferId(id));
+      Promise.all([
+        dispatch(fetchOfferAction(id)).unwrap(),
+        dispatch(fetchGetCommentsAction(id)).unwrap(),
+        dispatch(fetchOffersNearbyAction(id)).unwrap(),
+      ]);
+    }
+  }, [id, dispatch, currentId]);
 
   return (
     <div className="page">
@@ -38,7 +55,7 @@ function Offer(): JSX.Element {
               <Map
                 bemBlock="offer"
                 activeOffer={activeOffer}
-                offers={offersForMap}
+                offers={[...nearbyOffers, activeOffer]}
               />
             </>
           )}

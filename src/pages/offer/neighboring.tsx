@@ -1,17 +1,8 @@
 import { OfferCard } from '../../components/main/offer-card/offer-card';
-import { useActionCreators, useAppSelector } from '../../hooks/store';
+import { useAppSelector } from '../../hooks/store';
 import type { ThumbnailOffer } from '../../types/offer-type';
-import {
-  activeActions,
-  activeSelectors,
-} from '../../store/slices/active-slice';
-import { fetchGetCommentsAction } from '../../store/api-actions/comments-actions';
-import { store } from '../../store/store';
-import {
-  fetchOfferAction,
-  fetchOffersNearbyAction,
-} from '../../store/api-actions/offers-actions';
-import { Setting } from '../../const';
+import { activeSelectors } from '../../store/slices/active-slice';
+import { BemClass, Setting } from '../../const';
 
 type NeighboringProps = {
   offers: ThumbnailOffer[];
@@ -20,14 +11,6 @@ type NeighboringProps = {
 function Neighboring({ offers }: NeighboringProps) {
   const activeOfferId = useAppSelector(activeSelectors.activeOfferId);
   offers = offers.slice(0, Setting.NearbyCount);
-  const { setActiveOfferId } = useActionCreators(activeActions);
-
-  const handleMouseClick = (offer: ThumbnailOffer) => {
-    setActiveOfferId(offer.id);
-    store.dispatch(fetchOfferAction(offer.id));
-    store.dispatch(fetchGetCommentsAction(offer.id));
-    store.dispatch(fetchOffersNearbyAction(offer.id));
-  };
 
   return offers.length <= 1 ? (
     ''
@@ -43,9 +26,8 @@ function Neighboring({ offers }: NeighboringProps) {
               offer.id !== activeOfferId && (
                 <OfferCard
                   key={offer.id}
-                  bemBlock="near-places"
+                  bemBlock={BemClass.NearPlaces}
                   offer={offer}
-                  onClick={() => handleMouseClick(offer)}
                 />
               )
           )}

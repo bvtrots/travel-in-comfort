@@ -1,25 +1,17 @@
 import { Header } from '../../components/header/header';
 import { CitiesTabs } from './cities-tabs';
-import { CityOffers } from './city-offers';
 import { useChangeTitle } from '../../hooks/title';
-import { CitiesEmpty } from './cities-empty';
-import { Map } from '../../components/map/map';
 import clsx from 'clsx';
 import { useAppSelector } from '../../hooks/store';
 import { offersByCity } from '../../store/slices/offers-slice/offers-selectors';
-import { offersSelectors } from '../../store/slices/offers-slice/offers-slice';
 import { fetchOffersAction } from '../../store/api-actions/offers-actions';
 import { store } from '../../store/store';
-import { ShowLoading } from '../../components/main/show-loading';
-import { activeSelectors } from '../../store/slices/active-slice';
+import { CityContainer } from './city-container';
 
 store.dispatch(fetchOffersAction());
 
-
 function Cities(): JSX.Element {
   const cityOffers = useAppSelector(offersByCity);
-  const activeOffer = useAppSelector(offersSelectors.activeOffer);
-  const isLoading = useAppSelector(activeSelectors.isLoading);
   const isEmpty = cityOffers.length === 0;
   const isEmptyMainClasses = clsx('page__main', 'page__main--index', {
     'page__main--index-empty': isEmpty,
@@ -33,7 +25,6 @@ function Cities(): JSX.Element {
   return (
     <div className="page page--gray page--main">
       <Header />
-
       <main className={isEmptyMainClasses}>
         <h1 className="visually-hidden">Cities</h1>
         <div className="tabs">
@@ -43,23 +34,7 @@ function Cities(): JSX.Element {
         </div>
         <div className="cities">
           <div className={isEmptyCitiesClasses}>
-            {isLoading ? (
-              <ShowLoading />
-            ) : (
-              isEmpty ? (
-                <CitiesEmpty />
-              ) : (
-                <>
-                  <CityOffers />
-                  <div className="cities__right-section">
-                    <Map
-                      bemBlock="cities"
-                      activeOffer={activeOffer}
-                      offers={cityOffers}
-                    />
-                  </div>
-                </>
-              ))}
+            <CityContainer isEmpty={isEmpty} cityOffers={cityOffers} />
           </div>
         </div>
       </main>

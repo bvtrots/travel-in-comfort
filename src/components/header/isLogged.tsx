@@ -1,17 +1,27 @@
 import { Link } from 'react-router-dom';
 import { AppRoute } from '../../const';
 import { useAppSelector } from '../../hooks/store';
-import { favoritesOffers } from '../../store/slices/offers-slice/offers-selectors';
-import { userActions, userSelectors } from '../../store/slices/user-slice';
+import { userSelectors } from '../../store/slices/user-slice';
 import { dispatch } from '../../store/store';
 import { logoutAction } from '../../store/api-actions/auth-actions';
+import { FavoriteCount } from './favorite-count';
+import { fetchFavoritesAction } from '../../store/api-actions/favorites-actions';
+import { useMemo } from 'react';
 
 function IsLogged() {
+  const auth = useAppSelector(userSelectors.authStatus);
+
+  useMemo(() => {
+    if (auth) {
+      dispatch(fetchFavoritesAction());
+    }
+  }, [auth]);
+
   const userEmail = useAppSelector(userSelectors.userEmail);
-  const favorites = useAppSelector(favoritesOffers);
-  const handleClick = () => {
+
+  const handleClick = (evt: React.MouseEvent) => {
+    evt.preventDefault();
     dispatch(logoutAction());
-    dispatch(userActions.setUserEmail(''));
   };
 
   return (
@@ -23,17 +33,13 @@ function IsLogged() {
         >
           <div className="header__avatar-wrapper user__avatar-wrapper"></div>
           <span className="header__user-name user__name">{userEmail}</span>
-          <span className="header__favorite-count">{favorites.length}</span>
+          <FavoriteCount />
         </Link>
       </li>
       <li className="header__nav-item">
-        <Link
-          onClick={handleClick}
-          className="header__nav-link"
-          to={AppRoute.Login}
-        >
+        <a onClick={handleClick} className="header__nav-link" href="#2222">
           <span className="header__signout">Sign out</span>
-        </Link>
+        </a>
       </li>
     </ul>
   );

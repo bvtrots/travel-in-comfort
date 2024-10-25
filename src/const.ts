@@ -1,6 +1,8 @@
 const Setting = {
   NearbyCount: 3,
   TimeoutError: 2000,
+  ReviewMin: 50,
+  ReviewMax: 300,
 } as const;
 
 const CITIES = [
@@ -17,7 +19,7 @@ const RATING = [
   { value: 4, text: 'good' },
   { value: 3, text: 'not bad' },
   { value: 2, text: 'badly' },
-  { value: 1, text: 'terrible' },
+  { value: 1, text: 'terribly' },
 ];
 
 const SortOption = {
@@ -31,7 +33,8 @@ enum BemClass {
   Cities = 'cities',
   Offer = 'offer',
   Favorites = 'favorites',
-  PlaceCard = 'place-card'
+  PlaceCard = 'place-card',
+  NearPlaces = 'near-places',
 }
 
 enum AppRoute {
@@ -60,6 +63,33 @@ enum APIRoute {
   Logout = '/logout',
 }
 
+enum RequestStatus {
+  Idle = 'idle',
+  Loading = 'loading',
+  Success = 'success',
+  Failed = 'failed',
+}
+
+enum SliceName {
+  Offers = 'offers',
+  Active = 'active',
+  Error = 'error',
+  Favorites = 'favorites',
+  User = 'user',
+}
+
+enum ErrorMessage {
+  FetchOffersAction = 'Не удалось загрузить данные по предложениям',
+  FetchOfferAction = 'Не удалось загрузить выбранное предложение',
+  FetchOffersNearbyAction = 'Не удалось загрузить варианты аренды поблизости',
+  FetchGetCommentsAction = 'Не удалось загрузить отзывы',
+  FetchChangeFavoriteAction = 'Не удалось изменить избранное',
+  FetchFavoritesAction = 'Не удалось загрузить список избранных предложений',
+  LoginAction = 'Ошибка авторизации',
+  LogoutAction = 'Ошибка выхода',
+  CheckAuthAction = 'Не удалось загрузить данные пользователя',
+}
+
 export {
   Setting,
   CITIES,
@@ -70,4 +100,7 @@ export {
   MapMarker,
   AuthStatus,
   APIRoute,
+  RequestStatus,
+  SliceName,
+  ErrorMessage,
 };

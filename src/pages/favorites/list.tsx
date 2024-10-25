@@ -1,18 +1,20 @@
 import { Link } from 'react-router-dom';
 import { toStructureOffers } from './favorites-utils';
 import { OfferCard } from '../../components/main/offer-card/offer-card';
-import { useActionCreators, useAppSelector } from '../../hooks/store';
+import { useAppSelector } from '../../hooks/store';
 import { activeActions } from '../../store/slices/active-slice';
-import type { ThumbnailOffer } from '../../types/offer-type';
-import { favoritesOffers } from '../../store/slices/offers-slice/offers-selectors';
+import type { CityName } from '../../types/offer-type';
+import { AppRoute, BemClass } from '../../const';
+import { dispatch } from '../../store/store';
+import { favoritesSelectors } from '../../store/slices/favorites-slice';
 
 function List() {
-  const favorites = useAppSelector(favoritesOffers);
+  const favorites = useAppSelector(favoritesSelectors.favoritesOffers);
   const structuredOffers = toStructureOffers(favorites);
-  const { setActiveOfferId } = useActionCreators(activeActions);
 
-  const handleMouseClick = (offer: ThumbnailOffer) =>
-    setActiveOfferId(offer.id);
+  const handleCityClick = (city: CityName) =>
+    dispatch(activeActions.setCity(city));
+
   return (
     <section className="favorites">
       <h1 className="favorites__title">Saved listing</h1>
@@ -21,7 +23,11 @@ function List() {
           <li key={cityName} className="favorites__locations-items">
             <div className="favorites__locations locations locations--current">
               <div className="locations__item">
-                <Link className="locations__item-link" to="#">
+                <Link
+                  className="locations__item-link"
+                  onClick={() => handleCityClick(cityName)}
+                  to={AppRoute.Main}
+                >
                   <span>{cityName}</span>
                 </Link>
               </div>
@@ -30,9 +36,8 @@ function List() {
               {offers.map((offer) => (
                 <OfferCard
                   key={offer.id}
-                  bemBlock="favorites"
+                  bemBlock={BemClass.Favorites}
                   offer={offer}
-                  onClick={() => handleMouseClick(offer)}
                 />
               ))}
             </div>

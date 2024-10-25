@@ -10,7 +10,6 @@ type OfferCardProps = {
   offer: ThumbnailOffer;
   onMouseEnter?: (offer: ThumbnailOffer) => void;
   onMouseLeave?: () => void;
-  onClick: (offer: ThumbnailOffer) => void;
 };
 
 function OfferCard({
@@ -18,7 +17,6 @@ function OfferCard({
   offer,
   onMouseEnter,
   onMouseLeave,
-  onClick,
 }: OfferCardProps): React.ReactNode {
   const {
     id,
@@ -37,12 +35,7 @@ function OfferCard({
     bemBlock === BemClass.Favorites ? 'favorites__card-info ' : '';
 
   return (
-    <article
-      className={`${bemBlock}__card place-card`}
-      onMouseEnter={() => onMouseEnter?.(offer)}
-      onMouseLeave={() => onMouseLeave?.()}
-      onClick={() => onClick?.(offer)}
-    >
+    <article className={`${bemBlock}__card place-card`}>
       {isPremium && (
         <div className="place-card__mark">
           <span>Premium</span>
@@ -50,7 +43,11 @@ function OfferCard({
       )}
 
       <div className={`${bemBlock}__image-wrapper place-card__image-wrapper`}>
-        <Link to={AppRoute.Offer.replace(':id', id)}>
+        <Link
+          to={AppRoute.Offer.replace(':id', id)}
+          onMouseEnter={() => onMouseEnter?.(offer)}
+          onMouseLeave={() => onMouseLeave?.()}
+        >
           <img
             className="place-card__image"
             src={previewImage}
@@ -66,7 +63,11 @@ function OfferCard({
             <b className="place-card__price-value">&euro;{price}</b>
             <span className="place-card__price-text">&#47;&nbsp;night</span>
           </div>
-          <FavoriteButton bemBlock={BemClass.PlaceCard} isFavorite={isFavorite} />
+          <FavoriteButton
+            bemBlock={BemClass.PlaceCard}
+            isFavorite={isFavorite}
+            currentOffer={offer}
+          />
         </div>
         <Rating prefix="place-card" rating={rating} />
         <h2 className="place-card__name">

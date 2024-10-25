@@ -1,3 +1,4 @@
+import { RequestStatus } from '../../const';
 import type { Comment } from '../comment-type';
 import type { CityName, OfferType, ThumbnailOffer } from '../offer-type';
 import type { SortType } from '../sort-type';
@@ -8,18 +9,24 @@ type OffersSlice = {
   activeOffer: OfferType | null;
   nearbyOffers: ThumbnailOffer[];
   comments: Comment[];
+  requestStatus: RequestStatus;
+  error: string;
+};
+
+type FavoritesSlice = {
+  favoritesOffers: ThumbnailOffer[];
+  requestStatus: RequestStatus;
 };
 
 type ActiveSlice = {
-  isLoading: boolean;
   sortOption: SortType;
   city: CityName;
   activeOfferId: string;
 };
 
 type UserSlice = {
-  status: AuthType;
+  authStatus: AuthType;
   userEmail: string;
 };
 
-export type { OffersSlice, ActiveSlice, UserSlice };
+export type { OffersSlice, ActiveSlice, UserSlice, FavoritesSlice };
