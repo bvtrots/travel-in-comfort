@@ -3,22 +3,27 @@ import { Header } from '../../components/header/header';
 import { ShowLoading } from '../../components/main/show-loading';
 import { Photos } from './photos';
 import { Description } from './description';
-import { offersSelectors } from '../../store/slices/offers-slice/offers-slice';
+import {
+  offersSelectors,
+  offersSlice,
+} from '../../store/slices/offers-slice/offers-slice';
 import { Neighboring } from './neighboring';
 import { useChangeTitle } from '../../hooks/title';
 import { Map } from '../../components/map/map';
 import { Setting } from '../../const';
 import { useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { Navigate, useParams } from 'react-router-dom';
 import { fetchGetCommentsAction } from '../../store/api-actions/comments-actions';
 import {
   fetchOfferAction,
   fetchOffersNearbyAction,
 } from '../../store/api-actions/offers-actions';
 import { setActiveOfferId } from '../../store/slices/active-slice';
+import { OffersMapType } from '../../types/offer-type';
 
 function Offer(): JSX.Element {
   const { id = '' } = useParams();
+  const isError = useAppSelector(offersSelectors.isError);
   const activeOffer = useAppSelector(offersSelectors.activeOffer);
   const comments = useAppSelector(offersSelectors.comments);
   const nearbyOffers = useAppSelector(offersSelectors.nearbyOffers).slice(
@@ -41,6 +46,21 @@ function Offer(): JSX.Element {
     }
   }, [id, dispatch, currentId]);
 
+  useEffect(
+    () => () => {
+      setTimeout(() => dispatch(offersSlice.actions.resetError()));
+    },
+    [dispatch]
+  );
+
+  if (isError) {
+    return <Navigate to="/404" />;
+  }
+
+  const mapOffers: OffersMapType[] = [...nearbyOffers];
+  if (activeOffer) {
+    mapOffers.push(activeOffer);
+  }
   return (
     <div className="page">
       <Header />
@@ -52,11 +72,9 @@ function Offer(): JSX.Element {
             <>
               <Photos activeOffer={activeOffer} />
               <Description activeOffer={activeOffer} comments={comments} />
-              <Map
-                bemBlock="offer"
-                activeOffer={activeOffer}
-                offers={[...nearbyOffers, activeOffer]}
-              />
+              {mapOffers.length > 0 && (
+                <Map bemBlock="offer" offers={mapOffers} />
+              )}
             </>
           )}
         </section>
